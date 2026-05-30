@@ -31,7 +31,8 @@ export default function App() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #1A1714; }
+        body { background: #FAF7F2; margin: 0; }
+        html, body, #root { height: 100%; }
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(12px); }
           to { opacity: 1; transform: translateY(0); }
@@ -96,23 +97,9 @@ export default function App() {
         background: COLORS.cream,
         minHeight: "100vh",
         display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        flexDirection: "column",
       }}>
-        <div style={{
-          width: "390px",
-          minHeight: "844px",
-          background: COLORS.cream,
-          borderRadius: "44px",
-          boxShadow: "0 40px 120px rgba(26,23,20,0.25), 0 8px 32px rgba(26,23,20,0.12)",
-          overflow: "hidden",
-          position: "relative",
-          display: "flex",
-          flexDirection: "column",
-          border: `1px solid ${COLORS.lightGrey}`,
-        }}>
-          {screens[screen]}
-        </div>
+        {screens[screen]}
       </div>
     </>
   );

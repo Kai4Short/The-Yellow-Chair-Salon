@@ -1,5 +1,4 @@
 import COLORS from "../constants/colors";
-import StatusBar from "../components/StatusBar";
 import ProgressBar from "../components/ProgressBar";
 import getRecommendations from "../utils/recommendations";
 
@@ -15,8 +14,7 @@ const ResultsScreen = ({ onNext, onBack, hairData, goalData }) => {
   ];
 
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column", animation: "fadeIn 0.5s ease" }}>
-      <StatusBar />
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", animation: "fadeIn 0.5s ease", maxWidth: "600px", width: "100%", margin: "0 auto" }}>
       <ProgressBar step={4} />
       <div style={{ flex: 1, overflowY: "auto", padding: "24px 28px 32px" }}>
         <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>

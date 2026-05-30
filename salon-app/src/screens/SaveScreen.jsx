@@ -1,6 +1,5 @@
 import { useState } from "react";
 import COLORS from "../constants/colors";
-import StatusBar from "../components/StatusBar";
 import ProgressBar from "../components/ProgressBar";
 import GoldDivider from "../components/GoldDivider";
 
@@ -15,8 +14,7 @@ const SaveScreen = ({ onRestart, hairData, goalData }) => {
   };
 
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column", animation: "fadeIn 0.5s ease" }}>
-      <StatusBar />
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", animation: "fadeIn 0.5s ease", maxWidth: "600px", width: "100%", margin: "0 auto" }}>
       <ProgressBar step={5} />
       <div style={{ flex: 1, overflowY: "auto", padding: "24px 28px 40px" }}>
         <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 200, fontSize: "10px", letterSpacing: "0.35em", color: COLORS.gold, textTransform: "uppercase", marginBottom: "8px" }}>Step 04</p>

@@ -1,9 +1,7 @@
 import COLORS from "../constants/colors";
-import StatusBar from "../components/StatusBar";
 
 const WelcomeScreen = ({ onNext }) => (
-  <div style={{ flex: 1, display: "flex", flexDirection: "column", animation: "fadeIn 0.5s ease" }}>
-    <StatusBar />
+  <div style={{ flex: 1, display: "flex", flexDirection: "column", animation: "fadeIn 0.5s ease", maxWidth: "600px", width: "100%", margin: "0 auto" }}>
     <div style={{
       flex: 1, display: "flex", flexDirection: "column",
       padding: "0 36px 48px", justifyContent: "space-between",
