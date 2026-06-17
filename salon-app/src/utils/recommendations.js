@@ -95,7 +95,7 @@ const getHomeHaircare = (hair, goals) => {
 };
 
 const getFutureLooks = (hair, goals) => {
-  const { greyPercentage, density, thickness } = hair;
+  const { greyPercentage, density } = hair;
   const { goal } = goals;
   const tier = getGreyCoverageTier(greyPercentage)?.tier;
 

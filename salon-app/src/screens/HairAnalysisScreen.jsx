@@ -1,4 +1,3 @@
-import { useState } from "react";
 import COLORS from "../constants/colors";
 import ProgressBar from "../components/ProgressBar";
 import GoldDivider from "../components/GoldDivider";
