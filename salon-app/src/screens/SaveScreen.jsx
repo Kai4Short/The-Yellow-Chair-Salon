@@ -3,6 +3,14 @@ import COLORS from "../constants/colors";
 import ProgressBar from "../components/ProgressBar";
 import GoldDivider from "../components/GoldDivider";
 
+const DISTRIBUTION_LABELS = {
+  frontHairline: "Front Hairline",
+  temples: "Temples",
+  crown: "Crown",
+  scattered: "Scattered Throughout",
+  fullHead: "Full Head",
+};
+
 const SaveScreen = ({ onRestart, hairData, goalData }) => {
   const [clientName, setClientName] = useState("");
   const [notes, setNotes] = useState("");
@@ -12,6 +20,10 @@ const SaveScreen = ({ onRestart, hairData, goalData }) => {
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
+
+  const greyLabel = hairData.greyPercentage
+    ? hairData.greyPercentage === "less10" ? "< 10%" : hairData.greyPercentage.replace("to", "–") + "%"
+    : null;
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", animation: "fadeIn 0.5s ease", maxWidth: "600px", width: "100%", margin: "0 auto" }}>
@@ -39,26 +51,30 @@ const SaveScreen = ({ onRestart, hairData, goalData }) => {
           <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "10px", letterSpacing: "0.25em", color: COLORS.warmGrey, textTransform: "uppercase", marginBottom: "10px" }}>Session Notes</p>
           <textarea
             className="input-field"
-            rows={5}
+            rows={4}
             placeholder="Add any additional notes, formula details, or observations..."
             value={notes}
             onChange={e => setNotes(e.target.value)}
           />
         </div>
 
+        {/* Session summary card */}
         <div style={{
           background: `linear-gradient(135deg, ${COLORS.softBlack}, ${COLORS.charcoal})`,
           borderRadius: "16px", padding: "20px", marginBottom: "24px",
         }}>
-          <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "9px", letterSpacing: "0.3em", color: COLORS.gold, textTransform: "uppercase", marginBottom: "12px" }}>Session Summary</p>
+          <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "9px", letterSpacing: "0.3em", color: COLORS.gold, textTransform: "uppercase", marginBottom: "14px" }}>Session Summary</p>
           {[
             ["Profile", `${hairData.thickness} | Level ${hairData.level} | ${hairData.density} density`],
+            ["Texture", hairData.texture],
             ["Goal", goalData.goal],
             ["Condition", goalData.condition],
-          ].map(([k, v]) => (
-            <div key={k} style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-              <span style={{ fontFamily: "'Jost', sans-serif", fontSize: "10px", color: COLORS.warmGrey, letterSpacing: "0.1em" }}>{k}</span>
-              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "13px", color: COLORS.cream }}>{v}</span>
+            greyLabel ? ["Grey", greyLabel] : null,
+            hairData.greyDistribution?.length ? ["Distribution", hairData.greyDistribution.map(d => DISTRIBUTION_LABELS[d]).join(", ")] : null,
+          ].filter(Boolean).map(([k, v]) => (
+            <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px", gap: "12px" }}>
+              <span style={{ fontFamily: "'Jost', sans-serif", fontSize: "10px", color: COLORS.warmGrey, letterSpacing: "0.1em", flexShrink: 0 }}>{k}</span>
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "13px", color: COLORS.cream, textAlign: "right" }}>{v}</span>
             </div>
           ))}
         </div>

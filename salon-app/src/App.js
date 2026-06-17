@@ -9,12 +9,20 @@ import "./index.css";
 
 export default function App() {
   const [screen, setScreen] = useState(0);
-  const [hairData, setHairData] = useState({ thickness: "", density: "", level: null, condition: "" });
+  const [hairData, setHairData] = useState({
+    thickness: "",
+    density: "",
+    level: null,
+    condition: "",
+    texture: "",
+    greyPercentage: "",
+    greyDistribution: [],
+  });
   const [goalData, setGoalData] = useState({ goal: "", condition: "" });
 
   const handleRestart = () => {
     setScreen(0);
-    setHairData({ thickness: "", density: "", level: null, condition: "" });
+    setHairData({ thickness: "", density: "", level: null, condition: "", texture: "", greyPercentage: "", greyDistribution: [] });
     setGoalData({ goal: "", condition: "" });
   };
 
@@ -50,6 +58,15 @@ export default function App() {
         }
         .choice-btn:hover { border-color: ${COLORS.gold}; background: ${COLORS.goldLight}; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,169,110,0.2); }
         .choice-btn.selected { border-color: ${COLORS.gold}; background: linear-gradient(135deg, ${COLORS.goldLight}, #F5E8CC); box-shadow: 0 2px 12px rgba(201,169,110,0.25); }
+        .grey-pill {
+          border: 1.5px solid ${COLORS.lightGrey}; border-radius: 20px;
+          padding: 7px 14px; cursor: pointer; transition: all 0.2s ease;
+          font-family: 'Jost', sans-serif; font-weight: 300; font-size: 12px;
+          letter-spacing: 0.08em; color: ${COLORS.charcoal}; text-transform: uppercase;
+          background: ${COLORS.warmWhite};
+        }
+        .grey-pill:hover { border-color: ${COLORS.gold}; }
+        .grey-pill.selected { border-color: ${COLORS.gold}; background: linear-gradient(135deg, ${COLORS.goldLight}, #F5E8CC); color: ${COLORS.charcoal}; box-shadow: 0 2px 8px rgba(201,169,110,0.2); }
         .level-btn {
           width: 36px; height: 36px; border-radius: 50%;
           border: 1.5px solid ${COLORS.lightGrey}; background: ${COLORS.warmWhite};
@@ -80,6 +97,13 @@ export default function App() {
           border-radius: 16px; padding: 20px;
           animation: slideUp 0.4s ease forwards;
         }
+        .option-card {
+          background: ${COLORS.warmWhite}; border: 1.5px solid ${COLORS.lightGrey};
+          border-radius: 14px; padding: 16px 18px; cursor: pointer;
+          transition: all 0.25s ease; margin-bottom: 10px;
+        }
+        .option-card:hover { border-color: ${COLORS.gold}; transform: translateY(-1px); }
+        .option-card.selected { border-color: ${COLORS.gold}; background: linear-gradient(135deg, ${COLORS.goldLight}, #F5E8CC); box-shadow: 0 2px 12px rgba(201,169,110,0.25); }
         .input-field {
           width: 100%; background: ${COLORS.warmWhite};
           border: 1.5px solid ${COLORS.lightGrey}; border-radius: 12px;
