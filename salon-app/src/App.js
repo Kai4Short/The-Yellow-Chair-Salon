@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import COLORS from "./constants/colors";
 import { supabase } from "./lib/supabase";
+import ProfileMenu from "./components/ProfileMenu";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import AuthScreen from "./screens/AuthScreen";
 import GuestEmailScreen from "./screens/GuestEmailScreen";
@@ -8,6 +9,7 @@ import HairAnalysisScreen from "./screens/HairAnalysisScreen";
 import GoalScreen from "./screens/GoalScreen";
 import ResultsScreen from "./screens/ResultsScreen";
 import SaveScreen from "./screens/SaveScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 import "./index.css";
 
 const INITIAL_HAIR = { thickness: "", density: "", level: null, condition: "", texture: "", greyPercentage: "", greyDistribution: [] };
@@ -15,6 +17,7 @@ const INITIAL_GOAL = { goal: "", condition: "" };
 
 export default function App() {
   const [screen, setScreen] = useState("welcome");
+  const [prevScreen, setPrevScreen] = useState(null);
   const [user, setUser] = useState(null);
   const [guestEmail, setGuestEmail] = useState(null);
   const [hairData, setHairData] = useState(INITIAL_HAIR);
@@ -31,11 +34,42 @@ export default function App() {
   }, []);
 
   const handleRestart = () => {
-    setScreen("welcome");
+    setScreen(user ? "hair" : "welcome");
     setGuestEmail(null);
     setHairData(INITIAL_HAIR);
     setGoalData(INITIAL_GOAL);
   };
+
+  const handleSignOut = () => {
+    setUser(null);
+    setScreen("welcome");
+    setHairData(INITIAL_HAIR);
+    setGoalData(INITIAL_GOAL);
+  };
+
+  const goToProfile = () => {
+    setPrevScreen(screen);
+    setScreen("profile");
+  };
+
+  // Guest badge shown in ProgressBar for guest users on consultation screens
+  const guestBadge = !user && guestEmail ? (
+    <div style={{
+      background: COLORS.warmWhite, border: `1px solid ${COLORS.lightGrey}`,
+      borderRadius: "20px", padding: "4px 12px",
+      display: "flex", alignItems: "center", gap: "6px",
+    }}>
+      <div style={{ width: "5px", height: "5px", borderRadius: "50%", background: COLORS.gold }} />
+      <span style={{ fontFamily: "'Jost', sans-serif", fontSize: "9px", color: COLORS.warmGrey, letterSpacing: "0.1em", textTransform: "uppercase" }}>Guest</span>
+    </div>
+  ) : null;
+
+  // Profile avatar shown in ProgressBar for logged-in users
+  const profileAvatar = user ? (
+    <ProfileMenu user={user} onSignOut={handleSignOut} onEditProfile={goToProfile} />
+  ) : null;
+
+  const topRight = profileAvatar || guestBadge;
 
   const renderScreen = () => {
     switch (screen) {
@@ -46,13 +80,15 @@ export default function App() {
       case "guestEmail":
         return <GuestEmailScreen onNext={(email) => { setGuestEmail(email); setScreen("hair"); }} onBack={() => setScreen("welcome")} />;
       case "hair":
-        return <HairAnalysisScreen onNext={() => setScreen("goal")} onBack={() => setScreen(user ? "welcome" : "guestEmail")} data={hairData} setData={setHairData} />;
+        return <HairAnalysisScreen onNext={() => setScreen("goal")} onBack={() => setScreen("guestEmail")} data={hairData} setData={setHairData} topRight={topRight} user={user} />;
       case "goal":
-        return <GoalScreen onNext={() => setScreen("results")} onBack={() => setScreen("hair")} data={goalData} setData={setGoalData} />;
+        return <GoalScreen onNext={() => setScreen("results")} onBack={() => setScreen("hair")} data={goalData} setData={setGoalData} topRight={topRight} />;
       case "results":
-        return <ResultsScreen onNext={() => setScreen("save")} onBack={() => setScreen("goal")} hairData={hairData} goalData={goalData} />;
+        return <ResultsScreen onNext={() => setScreen("save")} onBack={() => setScreen("goal")} hairData={hairData} goalData={goalData} topRight={topRight} />;
       case "save":
-        return <SaveScreen onRestart={handleRestart} hairData={hairData} goalData={goalData} user={user} guestEmail={guestEmail} />;
+        return <SaveScreen onRestart={handleRestart} hairData={hairData} goalData={goalData} user={user} guestEmail={guestEmail} topRight={topRight} onBack={() => setScreen("results")} />;
+      case "profile":
+        return <ProfileScreen user={user} onBack={() => setScreen(prevScreen || "hair")} topRight={topRight} />;
       default:
         return null;
     }

@@ -1,16 +1,14 @@
 import { useState } from "react";
 import COLORS from "../constants/colors";
 import ProgressBar from "../components/ProgressBar";
+import ScreenHeader from "../components/ScreenHeader";
 import GoldDivider from "../components/GoldDivider";
 import { supabase } from "../lib/supabase";
 import getRecommendations from "../utils/recommendations";
 
 const DISTRIBUTION_LABELS = {
-  frontHairline: "Front Hairline",
-  temples: "Temples",
-  crown: "Crown",
-  scattered: "Scattered Throughout",
-  fullHead: "Full Head",
+  frontHairline: "Front Hairline", temples: "Temples", crown: "Crown",
+  scattered: "Scattered Throughout", fullHead: "Full Head",
 };
 
 const buildSummaryText = (hairData, goalData, clientName, notes) => {
@@ -50,12 +48,11 @@ ${recs.haircutOptions.map(o => `${o.label}: ${o.detail}`).join("\n")}
 `.trim();
 };
 
-const SaveScreen = ({ onRestart, hairData, goalData, user, guestEmail }) => {
+const SaveScreen = ({ onRestart, hairData, goalData, user, guestEmail, topRight, onBack }) => {
   const [clientName, setClientName] = useState("");
   const [notes, setNotes] = useState("");
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
-
   const isGuest = !user;
 
   const greyLabel = hairData.greyPercentage
@@ -63,71 +60,33 @@ const SaveScreen = ({ onRestart, hairData, goalData, user, guestEmail }) => {
     : null;
 
   const handleSave = async () => {
-    setStatus("loading");
-    setMessage("");
-
+    setStatus("loading"); setMessage("");
     if (isGuest) {
       const summaryText = buildSummaryText(hairData, goalData, clientName, notes);
       const { error } = await supabase.auth.signInWithOtp({
         email: guestEmail,
-        options: {
-          shouldCreateUser: true,
-          data: { consultation_summary: summaryText },
-          emailRedirectTo: window.location.origin,
-        },
+        options: { shouldCreateUser: true, data: { consultation_summary: summaryText }, emailRedirectTo: window.location.origin },
       });
       if (error) { setStatus("error"); setMessage("Failed to send email. Please try again."); return; }
-      await supabase.from("consultations").insert({
-        user_id: null,
-        client_name: clientName || `Guest — ${guestEmail}`,
-        notes,
-        hair_data: hairData,
-        goal_data: goalData,
-        confirmed_services: null,
-      });
-      setStatus("success");
-      setMessage(`Consultation summary sent to ${guestEmail}`);
+      await supabase.from("consultations").insert({ user_id: null, client_name: clientName || `Guest — ${guestEmail}`, notes, hair_data: hairData, goal_data: goalData, confirmed_services: null });
+      setStatus("success"); setMessage(`Consultation summary sent to ${guestEmail}`);
     } else {
-      const { error } = await supabase.from("consultations").insert({
-        user_id: user.id,
-        client_name: clientName,
-        notes,
-        hair_data: hairData,
-        goal_data: goalData,
-        confirmed_services: null,
-      });
+      const { error } = await supabase.from("consultations").insert({ user_id: user.id, client_name: clientName, notes, hair_data: hairData, goal_data: goalData, confirmed_services: null });
       if (error) { setStatus("error"); setMessage("Failed to save. Please try again."); return; }
-      setStatus("success");
-      setMessage("Consultation saved to your account.");
+      setStatus("success"); setMessage("Consultation saved to your account.");
     }
-  };
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    onRestart();
   };
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", animation: "fadeIn 0.5s ease", maxWidth: "600px", width: "100%", margin: "0 auto" }}>
+      <ScreenHeader onBack={onBack} showBack={true} topRight={topRight} />
       <ProgressBar step={5} />
       <div style={{ flex: 1, overflowY: "auto", padding: "24px 28px 40px" }}>
-
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
-          <div>
-            <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 200, fontSize: "10px", letterSpacing: "0.35em", color: COLORS.gold, textTransform: "uppercase", marginBottom: "8px" }}>Step 04</p>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "32px", color: COLORS.softBlack, marginBottom: "6px" }}>Save Consultation</h2>
-            <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "12px", color: COLORS.warmGrey, letterSpacing: "0.05em" }}>
-              {isGuest ? `Results will be emailed to ${guestEmail}` : `Signed in as ${user.email}`}
-            </p>
-          </div>
-          {!isGuest && (
-            <button onClick={handleSignOut} style={{
-              background: "none", border: `1px solid ${COLORS.lightGrey}`, borderRadius: "8px",
-              padding: "6px 12px", cursor: "pointer", fontFamily: "'Jost', sans-serif",
-              fontSize: "10px", color: COLORS.warmGrey, letterSpacing: "0.1em", textTransform: "uppercase",
-            }}>Sign Out</button>
-          )}
-        </div>
+        <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 200, fontSize: "10px", letterSpacing: "0.35em", color: COLORS.gold, textTransform: "uppercase", marginBottom: "8px" }}>Step 04</p>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "32px", color: COLORS.softBlack, marginBottom: "6px" }}>Save Consultation</h2>
+        <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 300, fontSize: "12px", color: COLORS.warmGrey, letterSpacing: "0.05em", marginBottom: "28px" }}>
+          {isGuest ? `Results will be emailed to ${guestEmail}` : `Signed in as ${user.email}`}
+        </p>
 
         <GoldDivider />
 
@@ -174,7 +133,6 @@ const SaveScreen = ({ onRestart, hairData, goalData, user, guestEmail }) => {
           style={{ marginBottom: "12px", opacity: status === "loading" || status === "success" ? 0.6 : 1, background: status === "success" ? "#6B8F6B" : undefined }}>
           {status === "loading" ? "Please wait..." : status === "success" ? (isGuest ? "✓ Email Sent" : "✓ Saved") : (isGuest ? "Send Summary to Email" : "Save Consultation")}
         </button>
-
         <button className="ghost-btn" onClick={onRestart}>New Consultation</button>
       </div>
     </div>

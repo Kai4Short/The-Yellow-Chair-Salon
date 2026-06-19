@@ -2,6 +2,7 @@ import { useState } from "react";
 import COLORS from "../constants/colors";
 import ProgressBar from "../components/ProgressBar";
 import GoldDivider from "../components/GoldDivider";
+import ScreenHeader from "../components/ScreenHeader";
 import getRecommendations from "../utils/recommendations";
 
 const DISTRIBUTION_LABELS = {
@@ -12,7 +13,7 @@ const DISTRIBUTION_LABELS = {
   fullHead: "Full Head",
 };
 
-const ResultsScreen = ({ onNext, onBack, hairData, goalData }) => {
+const ResultsScreen = ({ onNext, onBack, hairData, goalData, topRight }) => {
   const recs = getRecommendations(hairData, goalData);
 
   const [selectedColour, setSelectedColour] = useState(null);
@@ -36,12 +37,9 @@ const ResultsScreen = ({ onNext, onBack, hairData, goalData }) => {
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", animation: "fadeIn 0.5s ease", maxWidth: "600px", width: "100%", margin: "0 auto" }}>
-      <ProgressBar step={4} />
+      <ScreenHeader onBack={onBack} showBack={true} topRight={topRight} />
+      <ProgressBar step={3} />
       <div style={{ flex: 1, overflowY: "auto", padding: "24px 28px 40px" }}>
-        <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{ color: COLORS.warmGrey, fontSize: "18px" }}>←</span>
-          <span style={{ fontFamily: "'Jost', sans-serif", fontSize: "10px", letterSpacing: "0.2em", color: COLORS.warmGrey, textTransform: "uppercase" }}>Back</span>
-        </button>
 
         <p style={{ fontFamily: "'Jost', sans-serif", fontWeight: 200, fontSize: "10px", letterSpacing: "0.35em", color: COLORS.gold, textTransform: "uppercase", marginBottom: "8px" }}>Consultation Results</p>
         <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "32px", color: COLORS.softBlack, marginBottom: "6px" }}>Complete Look</h2>
