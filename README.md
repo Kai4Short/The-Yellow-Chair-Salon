@@ -132,4 +132,13 @@ All stylist-facing recommendations (colour direction, technique, haircut guidanc
 
 ## 📄 License
 
-This project is currently private/unlicensed. Add a license here if you intend to open-source it.
+**Proprietary — All Rights Reserved**
+
+Copyright (c) 2026 Kayan Kermani
+
+This source code and associated documentation are the proprietary and
+confidential property of Kayan Kermani. No part of this repository may
+be copied, modified, distributed, sublicensed, or used in any form
+without prior written permission from the copyright holder.
+
+This is a private project. Contributions and forks are not accepted.
